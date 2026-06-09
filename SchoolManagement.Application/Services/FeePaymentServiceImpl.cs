@@ -1,0 +1,73 @@
+using AutoMapper;
+using SchoolManagement.Application.Common.Interfaces;
+using SchoolManagement.Application.Common.Models;
+using SchoolManagement.Application.Repositories;
+using SchoolManagement.Domain.Entities;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace SchoolManagement.Application.Services
+{
+    public class FeePaymentServiceImpl : IFeePaymentService
+    {
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
+
+        public FeePaymentServiceImpl(IUnitOfWork unitOfWork, IMapper mapper)
+        {
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
+        }
+
+        public async Task<FeePaymentResponseDto> CreateAsync(CreateFeePaymentDto dto)
+        {
+            var entity = _mapper.Map<FeePayment>(dto);
+            entity.CreatedAt = System.DateTime.UtcNow;
+            entity.CreatedBy = "system";
+            await _unitOfWork.FeePayments.AddAsync(entity);
+            await _unitOfWork.SaveChangesAsync();
+            return _mapper.Map<FeePaymentResponseDto>(entity);
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var entity = await _unitOfWork.FeePayments.GetByIdAsync(id);
+            if (entity == null) throw new System.Exception("FeePayment not found");
+            _unitOfWork.FeePayments.Delete(entity);
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<FeePaymentResponseDto>> GetAllAsync()
+        {
+            var list = await _unitOfWork.FeePayments.ListAsync();
+            return _mapper.Map<IEnumerable<FeePaymentResponseDto>>(list);
+        }
+
+        public async Task<FeePaymentResponseDto> GetByIdAsync(int id)
+        {
+            var entity = await _unitOfWork.FeePayments.GetByIdAsync(id);
+            if (entity == null) throw new System.Exception("FeePayment not found");
+            return _mapper.Map<FeePaymentResponseDto>(entity);
+        }
+
+        public async Task UpdateAsync(UpdateFeePaymentDto dto)
+        {
+            var entity = await _unitOfWork.FeePayments.GetByIdAsync(dto.Id);
+            if (entity == null) throw new System.Exception("FeePayment not found");
+            entity.Amount = dto.Amount;
+            entity.PaymentDate = dto.PaymentDate;
+            entity.PaymentMethod = dto.PaymentMethod;
+            entity.UpdatedAt = System.DateTime.UtcNow;
+            entity.UpdatedBy = "system";
+            _unitOfWork.FeePayments.Update(entity);
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task<PaginatedResult<FeePaymentResponseDto>> GetPagedAsync(BaseQueryParams queryParams)
+        {
+            var paged = await _unitOfWork.FeePayments.GetPagedAsync(queryParams);
+            var mapped = _mapper.Map<IEnumerable<FeePaymentResponseDto>>(paged.Items);
+            return new PaginatedResult<FeePaymentResponseDto>(mapped, paged.TotalCount, paged.PageNumber, paged.PageSize);
+        }
+    }
+}
