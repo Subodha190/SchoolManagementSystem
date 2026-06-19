@@ -8,6 +8,6 @@
     <ProjectReference Include="../SchoolManagement.Application/SchoolManagement.Application.csproj" />
     <ProjectReference Include="../SchoolManagement.Infrastructure/SchoolManagement.Infrastructure.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.7" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 </Project>

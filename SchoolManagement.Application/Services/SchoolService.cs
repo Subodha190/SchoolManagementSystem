@@ -50,7 +50,7 @@ namespace SchoolManagement.Application.Services
         {
             var entity = await _unitOfWork.Schools.GetByIdAsync(dto.Id);
             if (entity == null) throw new Exception("School not found");
-            entity.Name = dto.Name;
+            entity.SchoolName = dto.Name;
             entity.UpdatedAt = DateTime.UtcNow;
             entity.UpdatedBy = "system";
             _unitOfWork.Schools.Update(entity);

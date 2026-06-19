@@ -1,6 +1,7 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SchoolManagement.Application.Common.Interfaces;
 using SchoolManagement.Application.Common.Models;
-using SchoolManagement.Application.Services;
 
 namespace SchoolManagement.API.Controllers
 {
@@ -8,9 +9,12 @@ namespace SchoolManagement.API.Controllers
     [Route("api/[controller]")]
     public class AttendancesController : ControllerBase
     {
-        private readonly AttendanceService _service;
+        private readonly IAttendanceService _service;
 
-        public AttendancesController(AttendanceService service) => _service = service;
+        public AttendancesController(IAttendanceService service)
+        {
+            _service = service;
+        }
 
         [HttpPost]
         public async Task<IActionResult> Create(CreateAttendanceDto dto)
@@ -19,6 +23,7 @@ namespace SchoolManagement.API.Controllers
             return Ok(result);
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] BaseQueryParams queryParams)
         {

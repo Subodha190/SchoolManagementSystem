@@ -10,6 +10,7 @@ namespace SchoolManagement.Infrastructure.Repositories
         private readonly ApplicationDbContext _context;
 
         public IStudentRepository Students { get; }
+        public IRepository<ApplicationUser> Users { get; }
         public IRepository<Course> Courses { get; }
         public IRepository<Teacher> Teachers { get; }
         public IRepository<School> Schools { get; }
@@ -27,7 +28,8 @@ namespace SchoolManagement.Infrastructure.Repositories
             IRepository<Subject> subjectRepository,
             IRepository<Enrollment> enrollmentRepository,
             IRepository<Attendance> attendanceRepository,
-            IRepository<FeePayment> feePaymentRepository)
+            IRepository<FeePayment> feePaymentRepository,
+            IRepository<ApplicationUser> users)
         {
             _context = context;
             Students = studentRepository;
@@ -38,6 +40,7 @@ namespace SchoolManagement.Infrastructure.Repositories
             Enrollments = enrollmentRepository;
             Attendances = attendanceRepository;
             FeePayments = feePaymentRepository;
+            Users = users;
         }
 
         public async Task<int> SaveChangesAsync()
