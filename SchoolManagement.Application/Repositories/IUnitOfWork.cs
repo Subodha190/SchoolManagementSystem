@@ -14,6 +14,7 @@ namespace SchoolManagement.Application.Repositories
         IRepository<Enrollment> Enrollments { get; }
         IRepository<Attendance> Attendances { get; }
         IRepository<FeePayment> FeePayments { get; }
+        IRepository<ApplicationUser> ApplicationUsers { get; }
 
     }
 }

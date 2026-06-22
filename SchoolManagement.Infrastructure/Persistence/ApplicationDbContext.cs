@@ -19,6 +19,8 @@ namespace SchoolManagement.Infrastructure.Persistence
         public DbSet<Attendance> Attendances { get; set; } = null!;
         public DbSet<FeePayment> FeePayments { get; set; } = null!;
         public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
+        public DbSet<Permission> Permissions { get; set; }
+        public DbSet<RolePermission> RolePermissions { get; set; }
 
         public Task<int> SaveChangesAsync(CancellationToken cancellationToken)
         {
