@@ -1,11 +1,12 @@
 using AutoMapper;
+using SchoolManagement.Application.Common.Interfaces;
 using SchoolManagement.Application.Common.Models;
 using SchoolManagement.Application.Repositories;
 using SchoolManagement.Domain.Entities;
 
 namespace SchoolManagement.Application.Services
 {
-    public class SchoolService
+    public class SchoolService : ISchoolService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -50,7 +51,7 @@ namespace SchoolManagement.Application.Services
         {
             var entity = await _unitOfWork.Schools.GetByIdAsync(dto.Id);
             if (entity == null) throw new Exception("School not found");
-            entity.SchoolName = dto.Name;
+            entity.SchoolName = dto.SchoolName;
             entity.UpdatedAt = DateTime.UtcNow;
             entity.UpdatedBy = "system";
             _unitOfWork.Schools.Update(entity);

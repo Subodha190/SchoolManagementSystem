@@ -69,6 +69,7 @@ builder.Services.AddAutoMapper(cfg => cfg.AddProfile<SchoolManagement.Applicatio
 #region DI (Repositories + Services)
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 builder.Services.AddScoped<IStudentService, StudentService>();
+
 #endregion
 
 #region Swagger + JWT Support

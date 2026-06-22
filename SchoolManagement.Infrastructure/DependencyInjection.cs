@@ -5,6 +5,7 @@ using SchoolManagement.Application.Common.Interfaces;
 using SchoolManagement.Application.Repositories;
 using SchoolManagement.Application.Services;
 using SchoolManagement.Domain.Entities;
+using SchoolManagement.Infrastructure.MultiTenancy;
 using SchoolManagement.Infrastructure.Persistence;
 using SchoolManagement.Infrastructure.Repositories;
 
@@ -59,24 +60,16 @@ namespace SchoolManagement.Infrastructure
             services.AddScoped(typeof(SchoolManagement.Application.Services.GenericCrudService<>));
 
             // Register entity services (implementation classes) - implementations below
-            services.AddScoped<SchoolManagement.Application.Common.Interfaces.ICourseService, SchoolManagement.Application.Services.CourseServiceImpl>();
-            services.AddScoped<SchoolManagement.Application.Common.Interfaces.ITeacherService, SchoolManagement.Application.Services.TeacherServiceImpl>();
-            services.AddScoped<SchoolManagement.Application.Common.Interfaces.ISchoolService, SchoolManagement.Application.Services.SchoolServiceImpl>();
-            services.AddScoped<SchoolManagement.Application.Common.Interfaces.ISubjectService, SchoolManagement.Application.Services.SubjectServiceImpl>();
-            services.AddScoped<SchoolManagement.Application.Common.Interfaces.IEnrollmentService, SchoolManagement.Application.Services.EnrollmentServiceImpl>();
-            services.AddScoped<SchoolManagement.Application.Common.Interfaces.IAttendanceService, SchoolManagement.Application.Services.AttendanceServiceImpl>();
-            services.AddScoped<SchoolManagement.Application.Common.Interfaces.IFeePaymentService, SchoolManagement.Application.Services.FeePaymentServiceImpl>();
+            services.AddScoped<ICourseService, CourseService>();
+            services.AddScoped<ITeacherService,TeacherService>();
+            services.AddScoped<ISchoolService, SchoolService>();
+            services.AddScoped<ISubjectService, SubjectService>();
+            services.AddScoped<IEnrollmentService, EnrollmentService>();
+            services.AddScoped<IAttendanceService, AttendanceService>();
+            services.AddScoped<IFeePaymentService, FeePaymentService>();
+            services.AddScoped<ICurrentTenantService,CurrentTenantService>();
 
-            #region Services (Application Layer Services)
-            services.AddScoped< StudentService>();
-            services.AddScoped<CourseServiceImpl>();
-            services.AddScoped< TeacherServiceImpl>();
-            services.AddScoped<SchoolServiceImpl>();
-            services.AddScoped< SubjectServiceImpl>();
-            services.AddScoped< EnrollmentServiceImpl>();
-            services.AddScoped< AttendanceServiceImpl>();
-            services.AddScoped< FeePaymentServiceImpl>();
-            #endregion
+           
 
 
             return services;

@@ -1,11 +1,12 @@
 using AutoMapper;
+using SchoolManagement.Application.Common.Interfaces;
 using SchoolManagement.Application.Common.Models;
 using SchoolManagement.Application.Repositories;
 using SchoolManagement.Domain.Entities;
 
 namespace SchoolManagement.Application.Services
 {
-    public class SubjectService
+    public class SubjectService : ISubjectService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;

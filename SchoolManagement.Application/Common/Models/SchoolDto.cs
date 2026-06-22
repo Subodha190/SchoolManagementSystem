@@ -4,7 +4,13 @@ namespace SchoolManagement.Application.Common.Models
 {
     public class CreateSchoolDto
     {
-        public string Name { get; set; } = string.Empty;
+        public string SchoolCode { get; set; }
+
+        public string SchoolName { get; set; }
+
+        public string Email { get; set; }
+
+        public bool IsActive { get; set; }
     }
 
     public class UpdateSchoolDto : CreateSchoolDto
@@ -15,6 +21,12 @@ namespace SchoolManagement.Application.Common.Models
     public class SchoolResponseDto
     {
         public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
+        public string SchoolCode { get; set; }
+
+        public string SchoolName { get; set; }
+
+        public string Email { get; set; }
+
+        public bool IsActive { get; set; }
     }
 }

@@ -18,6 +18,7 @@ namespace SchoolManagement.Infrastructure.Repositories
         public IRepository<Enrollment> Enrollments { get; }
         public IRepository<Attendance> Attendances { get; }
         public IRepository<FeePayment> FeePayments { get; }
+        public IRepository<ApplicationUser> ApplicationUsers { get; }
 
         public UnitOfWork(
             ApplicationDbContext context,
@@ -29,7 +30,8 @@ namespace SchoolManagement.Infrastructure.Repositories
             IRepository<Enrollment> enrollmentRepository,
             IRepository<Attendance> attendanceRepository,
             IRepository<FeePayment> feePaymentRepository,
-            IRepository<ApplicationUser> users)
+            IRepository<ApplicationUser> users,
+            IRepository<ApplicationUser> applicationUsers)
         {
             _context = context;
             Students = studentRepository;
@@ -41,6 +43,7 @@ namespace SchoolManagement.Infrastructure.Repositories
             Attendances = attendanceRepository;
             FeePayments = feePaymentRepository;
             Users = users;
+            ApplicationUsers = applicationUsers;
         }
 
         public async Task<int> SaveChangesAsync()
