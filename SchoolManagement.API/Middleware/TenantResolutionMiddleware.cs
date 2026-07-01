@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using SchoolManagement.Application.Common.Interfaces;
+using SchoolManagement.Infrastructure.Persistence;
 
 namespace SchoolManagement.API.Middleware
 {
@@ -8,9 +9,18 @@ namespace SchoolManagement.API.Middleware
         private readonly RequestDelegate _next;
         public TenantResolutionMiddleware(RequestDelegate next) => _next = next;
 
-        public async Task InvokeAsync(HttpContext context, ICurrentTenantService tenantService)
+        public async Task InvokeAsync(HttpContext context, ICurrentTenantService tenantService, ApplicationDbContext dbContext)
         {
-            // placeholder: set tenant id into some context if needed
+            try
+            {
+                var schoolId = tenantService?.SchoolId ?? 0;
+                dbContext?.SetCurrentSchoolId(schoolId);
+            }
+            catch
+            {
+                // swallow any tenant resolution errors to not break request pipeline here
+            }
+
             await _next(context);
         }
     }

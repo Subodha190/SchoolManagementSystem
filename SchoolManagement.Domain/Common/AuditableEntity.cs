@@ -15,6 +15,8 @@ namespace SchoolManagement.Domain.Common
 
         public bool IsDeleted { get; set; }
 
-        public string TenantId { get; set; } = string.Empty;
+        // Tenant isolation: every tenant is a School and is represented by SchoolId
+        // 0 means no tenant (system/global)
+        public int SchoolId { get; set; }
     }
 }

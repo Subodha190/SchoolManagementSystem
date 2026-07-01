@@ -32,51 +32,67 @@ public class ExceptionMiddleware
         HttpContext context,
         Exception exception)
     {
-        context.Response.ContentType =
-            "application/json";
+        context.Response.ContentType = "application/json";
 
-        var response = new ErrorResponse();
+        var traceId = context.TraceIdentifier;
+
+        var response = new SchoolManagement.API.Models.ErrorResponse
+        {
+            StatusCode = 500,
+            Message = "An unexpected error occurred",
+            Errors = null
+        };
 
         switch (exception)
         {
-            case AppValidationException validationException:
-
+            case SchoolManagement.Application.Common.Exceptions.AppValidationException validationException:
                 context.Response.StatusCode = 400;
-
                 response.StatusCode = 400;
+                response.Message = "Validation Failed";
+                response.Errors = validationException.Errors;
+                break;
 
-                response.Message =
-                    "Validation Failed";
+            case UnauthorizedAccessException:
+                context.Response.StatusCode = 401;
+                response.StatusCode = 401;
+                response.Message = "Unauthorized";
+                break;
 
-                response.Errors =
-                    validationException.Errors;
-
+            case SchoolManagement.Application.Common.Exceptions.ForbiddenException:
+                context.Response.StatusCode = 403;
+                response.StatusCode = 403;
+                response.Message = "Forbidden";
                 break;
 
             case KeyNotFoundException:
-
                 context.Response.StatusCode = 404;
-
                 response.StatusCode = 404;
+                response.Message = exception.Message;
+                break;
 
-                response.Message =
-                    exception.Message;
-
+            case SchoolManagement.Application.Common.Exceptions.ConflictException:
+                context.Response.StatusCode = 409;
+                response.StatusCode = 409;
+                response.Message = exception.Message;
                 break;
 
             default:
-
                 context.Response.StatusCode = 500;
-
                 response.StatusCode = 500;
-
-                response.Message =
-                    ErrorMessages.InternalServerError;
-
+                response.Message = SchoolManagement.Application.Common.Constants.ErrorMessages.InternalServerError;
                 break;
         }
 
-        await context.Response.WriteAsync(
-            JsonSerializer.Serialize(response));
+        // Add trace & timestamp
+        var wrapper = new
+        {
+            response.StatusCode,
+            response.Message,
+            Errors = response.Errors,
+            Timestamp = DateTime.UtcNow,
+            TraceId = traceId
+        };
+
+        await context.Response.WriteAsync(JsonSerializer.Serialize(wrapper));
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SchoolManagement.Domain.Entities;
 using SchoolManagement.Infrastructure.Identity;
@@ -32,6 +33,45 @@ namespace SchoolManagement.Infrastructure.Persistence
                 roleManager,
                 userManager,
                 appContext);
+
+            // Seed permissions and role permissions
+            if (!appContext.Permissions.Any())
+            {
+                var permissions = new List<Permission>
+                {
+                    new Permission { ModuleName = "Student", ActionName = "Create", PermissionKey = "Student.Create" },
+                    new Permission { ModuleName = "Student", ActionName = "Update", PermissionKey = "Student.Update" },
+                    new Permission { ModuleName = "Student", ActionName = "Delete", PermissionKey = "Student.Delete" },
+                    new Permission { ModuleName = "Teacher", ActionName = "Manage", PermissionKey = "Teacher.Manage" },
+                    new Permission { ModuleName = "School", ActionName = "Manage", PermissionKey = "School.Manage" }
+                };
+
+                appContext.Permissions.AddRange(permissions);
+                await appContext.SaveChangesAsync();
+
+                // Assign all permissions to SuperAdmin role
+                var superRole = await appContext.Roles.FirstOrDefaultAsync(r => r.Name == "SuperAdmin");
+                if (superRole != null)
+                {
+                    foreach (var p in permissions)
+                    {
+                        appContext.RolePermissions.Add(new RolePermission { RoleId = superRole.Id, PermissionId = p.Id });
+                    }
+                }
+
+                // Assign student permissions to SchoolAdmin
+                var schoolRole = await appContext.Roles.FirstOrDefaultAsync(r => r.Name == "SchoolAdmin");
+                var studentPerm = permissions.Where(p => p.ModuleName == "Student").ToList();
+                if (schoolRole != null)
+                {
+                    foreach (var p in studentPerm)
+                    {
+                        appContext.RolePermissions.Add(new RolePermission { RoleId = schoolRole.Id, PermissionId = p.Id });
+                    }
+                }
+
+                await appContext.SaveChangesAsync();
+            }
 
             // Seed some sample data: a school, a school admin, a teacher and a student
             if (!appContext.Schools.Any())
@@ -74,6 +114,7 @@ namespace SchoolManagement.Infrastructure.Persistence
                     FullName  = "John Doe",
                     Email = "j.doe@centralhigh.com",
                     Salary = 50000m,
+                    SchoolId = school.Id
                 };
                 appContext.Teachers.Add(teacher);
 
@@ -83,6 +124,7 @@ namespace SchoolManagement.Infrastructure.Persistence
                     FirstName = "Jane",
                     LastName = "Smith",
                     Email = "jane.smith@student.com",
+                    SchoolId = school.Id
                    
                 };
                 appContext.Students.Add(student);
