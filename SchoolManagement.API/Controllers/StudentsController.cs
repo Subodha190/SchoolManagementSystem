@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SchoolManagement.Application.Common.Interfaces;
 using SchoolManagement.Application.Common.Models;
+using SchoolManagement.API.Attributes;
 
 namespace SchoolManagement.API.Controllers
 {
@@ -17,6 +18,7 @@ namespace SchoolManagement.API.Controllers
 
         [HttpPost]
         [ServiceFilter(typeof(ValidationFilter<CreateStudentDto>))]
+        [HasPermissionAuthorize("Student.Create")]
         public async Task<IActionResult> CreateStudent(CreateStudentDto request)
         {
             var result =
@@ -26,6 +28,7 @@ namespace SchoolManagement.API.Controllers
         }
 
         [HttpGet]
+        [HasPermissionAuthorize("Student.View")]
         public async Task<IActionResult> GetStudents(
         [FromQuery] BaseQueryParams queryParams)
         {

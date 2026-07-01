@@ -134,8 +134,10 @@ app.UseSwaggerUI(c =>
 app.UseRouting();
 
 app.UseMiddleware<ExceptionMiddleware>();
+// Tenant resolution must occur after authentication so the SchoolId claim is available
+app.UseAuthentication();
+app.UseMiddleware<SchoolManagement.API.Middleware.TenantResolutionMiddleware>();
 
-app.UseAuthentication();   // MUST BE BEFORE Authorization
 app.UseAuthorization();
 
 app.MapControllers();

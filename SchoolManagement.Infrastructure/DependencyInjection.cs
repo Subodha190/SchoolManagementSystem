@@ -67,7 +67,23 @@ namespace SchoolManagement.Infrastructure
             services.AddScoped<IEnrollmentService, EnrollmentService>();
             services.AddScoped<IAttendanceService, AttendanceService>();
             services.AddScoped<IFeePaymentService, FeePaymentService>();
-            services.AddScoped<ICurrentTenantService,CurrentTenantService>();
+            services.AddHttpContextAccessor();
+            services.AddScoped<ICurrentTenantService, CurrentTenantService>();
+
+            // Register dynamic Permission policy provider and authorization handler
+            // PermissionAuthorizationHandler now resolves scoped services via IServiceScopeFactory,
+            // therefore it is safe to register it as a singleton.
+            services.AddSingleton<Microsoft.AspNetCore.Authorization.IAuthorizationPolicyProvider, SchoolManagement.Infrastructure.Authorization.PermissionPolicyProvider>();
+            services.AddSingleton<Microsoft.AspNetCore.Authorization.IAuthorizationHandler, SchoolManagement.Infrastructure.Authorization.PermissionAuthorizationHandler>();
+
+            services.AddMemoryCache();
+
+            // Request context for audit and db context use
+            services.AddScoped<SchoolManagement.Application.Common.Interfaces.IRequestContext, SchoolManagement.Infrastructure.Request.RequestContext>();
+            services.AddScoped<SchoolManagement.Application.Common.Interfaces.IPermissionService, SchoolManagement.Infrastructure.Services.PermissionService>();
+
+            // Note: Do NOT set CurrentSchoolId here in DI time. Tenant is resolved per request
+            // by TenantResolutionMiddleware which will set the ApplicationDbContext.CurrentSchoolId.
 
            
 

@@ -37,7 +37,6 @@ namespace SchoolManagement.Application.Services
 
             student.CreatedAt = DateTime.UtcNow;
             student.CreatedBy = "system";
-            student.TenantId = "default";
 
             student.Status = StudentStatus.Active;
 
